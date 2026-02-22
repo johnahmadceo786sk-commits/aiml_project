@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Performance Predictor</title>
+</head>
+<body>
+
+<h2>Student Performance Prediction</h2>
+
+<input id="study_hours" placeholder="Study Hours"><br><br>
+<input id="attendance" placeholder="Attendance %"><br><br>
+<input id="previous_marks" placeholder="Previous Marks"><br><br>
+<input id="assignment_score" placeholder="Assignment Score"><br><br>
+
+<button onclick="predict()">Predict</button>
+
+<h3 id="result"></h3>
+
+<script>
+async function predict() {
+    const response = await fetch("http://EC2_PUBLIC_IP:8000/predict", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            study_hours: parseFloat(document.getElementById("study_hours").value),
+            attendance: parseFloat(document.getElementById("attendance").value),
+            previous_marks: parseFloat(document.getElementById("previous_marks").value),
+            assignment_score: parseFloat(document.getElementById("assignment_score").value)
+        })
+    });
+
+    const data = await response.json();
+
+    document.getElementById("result").innerText =
+        "Prediction: " + data.prediction +
+        " | Probability: " + data.probability.toFixed(2);
+}
+</script>
+
+</body>
+</html>
